@@ -65,11 +65,11 @@ select_random_tsa () {
 }
 
 CURL_FILE=request.html
-TSR_FILE=$(printf "%s%s" $CURL_FILE_PREFIX ".tsr")
+TSR_FILE=$(printf "%s%s" $CURL_FILE ".tsr")
 
 curl_tsa_create_tsr () {
    url=$1
-   tsa_url=$(_select_random_tsa)
+   tsa_url=$(select_random_tsa)
 
    curl $url | tee $CURL_FILE | \
    openssl ts -query -sha512 | \
