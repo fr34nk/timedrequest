@@ -66,6 +66,7 @@ select_random_tsa () {
 
 CURL_FILE=request.html
 TSR_FILE=$(printf "%s%s" $CURL_FILE ".tsr")
+TSR_TXT_FILE=$(printf "%s%s" $CURL_FILE ".tsr.txt")
 
 curl_tsa_create_tsr () {
    url=$1
@@ -78,11 +79,10 @@ curl_tsa_create_tsr () {
 
 curl_tsr_to_text () {
   tsr=$1
-  openssl ts -reply -in $tsr -text
+  openssl ts -reply -in $tsr -text | tee $TSR_TXT_FILE;
 }
 
 DEBUG_TSR=True
-
 request () {
   url=$1
   
@@ -92,4 +92,34 @@ request () {
     curl_tsr_to_text $TSR_FILE
   fi
 }
+
+
+
+##### 
+Usage Section
+#####
+usage () {
+  echo """
+Usage:
+
+  The request function will generate both tsr and tsr.txt files that are the time proof of existence
+  of the request itself;
+
+    request <URL>
+  """
+}
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    # echo "I am being EXECUTED. Running main logic..."
+    if [[ -z "$1" ]]; then
+        usage;
+        exit 1
+    fi
+    
+    request $@ 
+else
+   usage;
+fi
+
+
 
