@@ -77,10 +77,9 @@ curl_tsa_create_tsr () {
 }
 
 
-TSR_TXT_DEFAULT_PATH=response.html.tsr.txt
 curl_tsr_to_text () {
   tsr_file_path=$1
-  tsr_txt_file_path=${2:-$TSR_TXT_DEFAULT_PATH}
+  tsr_txt_file_path=$2
 
   openssl ts -reply -in $tsr_file_path -text | tee $tsr_txt_file_path;
 }
@@ -92,8 +91,13 @@ DEBUG_TSR=True
 request () {
   url=$1
   response_file_path=${2:-$RESPONSE_DEFAULT_PATH}
-  tsr_file_path=${3:-$TSR_DEFAULT_PATH}
-  tsr_txt_file_path=${4:-$TSR_TXT_DEFAULT_PATH}
+
+  tsr_default_path=$(printf "%s%s" $response_file_path ".tsr")
+  tsr_file_path=${3:-$tsr_default_path}
+
+  tsr_txt_default_path=$(printf "%s%s" $tsr_file_path ".txt")
+  tsr_txt_file_path=${4:-$tsr_txt_default_path}
+
   
   curl_tsa_create_tsr $url $response_file_path $tsr_file_path;
 
