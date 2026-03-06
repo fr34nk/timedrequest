@@ -6,11 +6,15 @@ Useful for forensic auditing of web pages that need to record time of existence 
 
 In a bash terminal execute:
 
+```bash
 source request.sh # it will add to your bash session
+```
 
 then:
 
+```bash
 request <url>
+```
 
 ### Features:
 
