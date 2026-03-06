@@ -64,39 +64,46 @@ select_random_tsa () {
     echo "${servers[$index]}"
 }
 
-CURL_FILE=request.html
-TSR_FILE=$(printf "%s%s" $CURL_FILE ".tsr")
-TSR_TXT_FILE=$(printf "%s%s" $CURL_FILE ".tsr.txt")
-
 curl_tsa_create_tsr () {
    url=$1
+   response_file=$2
+   tsr_path=$3
+
    tsa_url=$(select_random_tsa)
 
-   curl $url | tee $CURL_FILE | \
+   curl $url | tee $response_file | \
    openssl ts -query -sha512 | \
-      curl -H "Content-Type: application/timestamp-query" --data-binary @- $tsa_url > $TSR_FILE;
+      curl -H "Content-Type: application/timestamp-query" --data-binary @- $tsa_url > $tsr_path;
 }
 
+
+TSR_TXT_DEFAULT_PATH=response.html.tsr.txt
 curl_tsr_to_text () {
-  tsr=$1
-  openssl ts -reply -in $tsr -text | tee $TSR_TXT_FILE;
+  tsr_file_path=$1
+  tsr_txt_file_path=${2:-$TSR_TXT_DEFAULT_PATH}
+
+  openssl ts -reply -in $tsr_file_path -text | tee $tsr_txt_file_path;
 }
+
+RESPONSE_DEFAULT_PATH=response.html
+TSR_DEFAULT_PATH=response.html.tsr
 
 DEBUG_TSR=True
 request () {
   url=$1
+  response_file_path=${2:-$RESPONSE_DEFAULT_PATH}
+  tsr_file_path=${3:-$TSR_DEFAULT_PATH}
+  tsr_txt_file_path=${4:-$TSR_TXT_DEFAULT_PATH}
   
-  curl_tsa_create_tsr $url;
+  curl_tsa_create_tsr $url $response_file_path $tsr_file_path;
 
   if [[ $DEBUG_TSR -eq True ]] ;then
-    curl_tsr_to_text $TSR_FILE
+    curl_tsr_to_text $tsr_file_path $tsr_txt_file_path
   fi
 }
 
-
-
 ##### 
-Usage Section
+# Usage Section
 #####
 usage () {
   echo """
@@ -105,7 +112,7 @@ Usage:
   The request function will generate both tsr and tsr.txt files that are the time proof of existence
   of the request itself;
 
-    request <URL>
+    request <URL> <OUTPUT_TSR_FILE_PATH> <OUTPUT_TSR_TXT_FILE_PATH>
   """
 }
 
