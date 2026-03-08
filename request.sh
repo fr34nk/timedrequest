@@ -276,8 +276,23 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     
     request $@ 
 else
+    export -f select_random_tsa_with_error_log
+    export -f select_random_tsa
+    export -f curl_tsa_create_tsr
+    export -f curl_tsr_to_text
+    export -f usage
+    export -f request
+
    usage;
 fi
 
+
+# 2. Extract and export only the dependencies
+# This looks inside the code of request for any words
+for func in $(declare -f request | grep -oE '\b[a-zA-Z_][a-zA-Z0-9_]*\b'); do
+    if declare -F "$func" >/dev/null; then
+        export -f "$func"
+    fi
+done
 
 
