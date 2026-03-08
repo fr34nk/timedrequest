@@ -216,6 +216,43 @@ request () {
   fi
 }
 
+request_with_scripts () {
+  url=$1;
+
+  response_file_path=${2:-$RESPONSE_DEFAULT_PATH}
+
+  tsr_default_path=$(printf "%s%s" $response_file_path ".tsr")
+  tsr_file_path=${3:-$tsr_default_path}
+
+  tsr_txt_default_path=$(printf "%s%s" $tsr_file_path ".txt")
+  tsr_txt_file_path=${4:-$tsr_txt_default_path}
+
+  curl_tsa_create_tsr $url $response_file_path $tsr_file_path $options;
+
+
+  if [[ $DEBUG_TSR -eq True ]] ;then
+    curl_tsr_to_text $tsr_file_path $tsr_txt_file_path
+  fi
+
+  script_link_path=$(get_script_links_from_url $url $response_file_path)
+
+  # Script saving section
+  for link in $(cat $script_link_path); do
+    script_path=$(echo $link | link_to_filename);
+
+    tsr_script_default_path=$(printf "%s%s" $script_path ".tsr")
+    tsr_script_file_path=${3:-$tsr_script_default_path}
+
+    tsr_script_txt_default_path=$(printf "%s%s" $tsr_script_file_path ".txt")
+    tsr_script_txt_file_path=${4:-$tsr_script_txt_default_path}
+
+    request $link $script_path $tsr_script_file_path;
+
+    curl_tsr_to_text $tsr_script_file_path $tsr_script_txt_file_path;
+  done
+}
+
+
 ##### 
 # Usage Section
 #####
