@@ -93,6 +93,15 @@ curl_tsa_create_tsr () {
            --data-binary @- "$tsa_url"; } > "$tsr_path"; 
 }
 
+tsq_from_file () {
+  if [[ -n $1 ]]; then
+    file=$1
+    openssl ts -query -sha512 -data $file;
+  else
+     openssl ts -query -sha512 
+  fi
+}
+
 
 curl_tsr_to_text () {
   tsr_file_path=$1
