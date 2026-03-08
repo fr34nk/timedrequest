@@ -142,6 +142,24 @@ tsr_from_file () {
   fi
 }
 
+tsr_and_text_from_file () {
+  tsa_url=$(select_random_tsa)
+  file_path=$1
+  tsx_file_path=$(printf "%s%s" $file_path ".txt")
+
+  if [[ -n $file_path ]]; then
+
+    tsr_from_file $file_path | \
+      openssl ts -reply -text -in /dev/stdin | tee $tsx_file_path
+
+  else
+
+    tsr_from_file | \
+      openssl ts -reply -text -in /dev/stdin | tee $tsx_file_path
+
+  fi
+}
+
 curl_tsr_to_text () {
   tsr_file_path=$1
   tsr_txt_file_path=$2
