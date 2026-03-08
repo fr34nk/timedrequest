@@ -73,6 +73,7 @@ curl_tsa_create_tsr () {
    url=$1
    response_file=$2
    tsr_path=$3
+   tsr_header_path=$(printf "%s%s" $tsr_path ".header")
 
    tsa_url=$(select_random_tsa)
 
