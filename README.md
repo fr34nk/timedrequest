@@ -16,7 +16,7 @@ then:
 request <url>
 ```
 
-### Features:
+### Main Features:
 
 - [x] Request data for user
 - [x] Record the time of existence record parallel to the request of data
@@ -27,6 +27,11 @@ request <url>
 - [ ] Implement queue system to classify the server response,
 - [ ] Implement redundancy on time record request
 - [ ] Support to proxy configuration, both for the request as for the time query record
+
+
+### Technical Tasks
+
+- [ ] Parametrize env variables into the options argumento to the main request function
 
 
 
