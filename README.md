@@ -11,9 +11,8 @@ as you received in a moment in future. Just execute `tsr_from_file` and you get 
 If someone in the future contest you about the file you received correspond to the 
 version he has, just send him the `tsr file`.
 
-It is useful for persons that need proof of existence of files, either to check their 
+It is useful for persons that need a proof of existence of files, either to check their 
 integrity, or to send to someone else proof of it.
-
 
 The main functionalities are in the `request` and `tsr_and_txt_from_file` functions.
 
@@ -23,7 +22,6 @@ the content of the returned html page in that point time;
 `tsr_and_txt_from_file <file>` will execute the same process, but from a file you already have
 in your disk. Just execute it and will get the same output of the request, the files that
 prove the existence of that "content" in a point time;
-
 
 
 ### How to use
@@ -38,16 +36,18 @@ then:
 
 ```bash
 request <url>
+tsr_and_txt_from_file <url>
 ```
 
 ### Main Features:
 
+- [ ] Create cross platform support
+- [ ] Create a gui version of it
+- [ ] Create support to different hash algorithm
 - [x] Request data for user
 - [x] Record the time of existence record parallel to the request of data
 - [x] Use different servers for time of existence record
 - [ ] Implement different ways of querying the data itself
-- [ ] Create cross platform support
-- [ ] Create support to different hash algorithm
 - [ ] Implement queue system to classify the server response,
 - [ ] Implement redundancy on time record request
 - [ ] Support to proxy configuration, both for the request as for the time query record
@@ -55,7 +55,7 @@ request <url>
 
 ### Technical Tasks
 
-- [ ] Parametrize env variables into the options argumento to the main request function
+- [ ] Parametrize env variables into the options arguments to the main request function
 
 
 
