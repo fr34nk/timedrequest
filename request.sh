@@ -64,6 +64,11 @@ select_random_tsa () {
     echo "${servers[$index]}"
 }
 
+
+DEBUG_CODE=True
+TSA_QUERY_WITH_HEADER=True
+TSQ_FILE_KEEP=True
+REQUEST_WITH_HEADER=True
 curl_tsa_create_tsr () {
    url=$1
    response_file=$2
@@ -71,9 +76,20 @@ curl_tsa_create_tsr () {
 
    tsa_url=$(select_random_tsa)
 
-   curl $url | tee $response_file | \
-   openssl ts -query -sha512 | \
-      curl -H "Content-Type: application/timestamp-query" --data-binary @- $tsa_url > $tsr_path;
+     tsq_file_path=$(printf "%s%s" $response_file ".tsq");
+
+     { [[ "$REQUEST_WITH_HEADER" == "True" ]] && \
+        curl -s -i "$url" || \
+        curl -s "$url" || cat; } | \
+        tee $response_file | \
+       openssl ts -query -sha512 | \
+        { [[ "$TSQ_FILE_KEEP" == "True" ]] && \
+          tee "$tsq_file_path" || cat; } | \
+        { [[ "$TSA_QUERY_WITH_HEADER" == "True" ]] && \
+         curl -D $tsr_header_path -s -H "Content-Type: application/timestamp-query" \
+           --data-binary @- "$tsa_url" || \
+         curl -s -H "Content-Type: application/timestamp-query" \
+           --data-binary @- "$tsa_url"; } > "$tsr_path"; 
 }
 
 
