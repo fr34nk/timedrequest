@@ -36,7 +36,7 @@ then:
 
 ```bash
 request <url>
-tsr_and_txt_from_file <url>
+tsr_and_txt_from_file <file>
 ```
 
 ### Main Features:
