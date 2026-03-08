@@ -167,6 +167,33 @@ curl_tsr_to_text () {
   openssl ts -reply -in $tsr_file_path -text | tee $tsr_txt_file_path;
 }
 
+link_to_filename () {
+  sed -E 's|https?://||; s|\?.*||; s|/|:|g'
+}
+
+url_get_domain () {
+  sed -E 's|^https?://||; s|/.*||'
+}
+
+get_script_links_from_url () {
+  # create a link list for parse and save
+  url=$1
+  output_path=${2:-output.links}
+
+  filename=$(echo $url | link_to_filename);
+  links_path=$(printf "%s.%s.links" $output_path $filename);
+
+  domain=$(echo $url | url_get_domain)
+
+  curl -s $url | \
+    pup "script, link[rel=\"preload\"]" | \
+    sed -nE 's/.*[a-z-]*(src|href|url)="((https?|http):[^"]+)".*/\2/p' > $links_path;
+
+  echo $links_path;
+}
+
+
+
 RESPONSE_DEFAULT_PATH=response.html
 TSR_DEFAULT_PATH=response.html.tsr
 
